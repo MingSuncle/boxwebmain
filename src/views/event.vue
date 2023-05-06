@@ -2,7 +2,7 @@
     <div>
         <b>事件管理</b>
         <div style="margin:10px 0">
-            <el-button type="primary" @click="newBox">新增事件 <i class="el-icon-circle-plus-outline"></i></el-button>
+            <el-button type="primary" @click="newEvent">新增事件 <i class="el-icon-circle-plus-outline"></i></el-button>
         </div>
 
 
@@ -115,7 +115,7 @@ export default {
         },
     },
     methods: {
-        newBox() {
+        newEvent() {
             this.createVisible = true;
         },
         search() {
@@ -190,54 +190,40 @@ export default {
             });
         },
         handleCreate(editForm) {
-            this.$refs.editFormRule.validate((valid) => {
-                if (valid) {
-                    this.editForm.boxState = 0;
-                    this.editForm.aieventLimit = this.editForm.aieventLimit.join(',')
-
-                    this.request.post("/box/addBox", this.editForm).then(res => {
-                        if (res.code == 200) {
-                            this.$message({
-                                message: '添加成功',
-                                type: 'success'
-                            });
-                            this.load();
-                            this.createVisible = false
-                        }
-                        else if (res.code == 300) {
-                            this.$message.error('盒子ID已存在！');
-                            this.editForm = {}
-                            console.log(this.editForm)
-                        }
-                        else {
-                            this.$message.error('添加失败')
-                            this.editForm = Object.assign({}, this.editForm)
-                        }
-                    })
-                } else {
-                    this.$message.error('请规范输入！');
-                    return false;
+            this.request.post("/event/addEvent",this.editForm).then(res => {
+                if(res.code == 200){
+                    this.$message({
+                        message:'添加成功',
+                        type:'success'
+                    });
+                    this.editForm = {};
+                    this.load();
+                    this.createVisible = false
                 }
-            });
+                else{
+                    this.$message.error('添加失败')
+                    
+                }
+            })
 
         },
         load() {
 
             this.request.get("/event/getAll", {
-                // params: {
-                //     current_page: this.current_page,
-                //     page_size: this.pageSize,
+                params: {
+                    current_page: this.current_page,
+                    page_size: this.page_size,
 
-                // }
+                }
             }).then(res => {
                 this.tableData = res.data.result
-                // this.total = res.data.total
+                this.total = res.data.total
 
             })
 
         },
-        handleSizeChange(pageSize) {
-            this.pageSize = pageSize
+        handleSizeChange(page_size) {
+            this.page_size = page_size
             this.load()
         },
         handleCurrentChange(current_page) {

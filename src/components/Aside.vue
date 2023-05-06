@@ -1,11 +1,12 @@
 <template>
-    <el-menu :default-openeds="['2']" style="width:210px;min-height:100%;overflow-x: hidden;" background-color="rgb(48,65,86)"
-        text-color='#fff' active-text-color="#2990d6" :collapse-transition="true" :collapse="isCollapse" router>
-        <div style="height:60px;line-height: 60px;text-align: center;">
-            <!-- <img src="../assets/logoa.png" alt="" style="width:20px;position:relative;top:5px;margin-right: 5px;"> -->
-            <i class="el-icon-set-up" style="color:#fff"></i>
-            <b style="color:white " v-show="logoTextShow">智能设备管理平台</b>
-        </div>
+    <div>
+        <div class="menuplaceholder"></div>
+        <el-menu class="menu" :default-openeds="['2']" background-color="rgb(48,65,86)" text-color='#fff'
+            active-text-color="#2990d6" :collapse-transition="true" :collapse="isCollapse" router>
+            <div style="height:60px;line-height: 60px;text-align: center;">
+                <!-- <img src="../assets/logoc.png" alt="" style="width:170px;position:relative;top:5px;margin-right: 5px;"> -->
+                <b style="color:white " v-show="logoTextShow">智能平台(demo)</b>
+            </div>
         <el-menu-item index="/">
             <template slot="title">
             <i class="el-icon-house"></i>
@@ -25,6 +26,7 @@
         <span slot="title">数据管理</span>
       </el-menu-item> -->
     </el-menu>
+    </div>
 </template>
 
 <script>
@@ -38,4 +40,41 @@
 </script>
 
 <style scoped>
+.menuplaceholder {
+    width: 200px;
+}
+
+.menu {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+    top: 0px;
+    /* 菜单组件的顶部偏移量等于占位元素的高度 */
+    left: 0;
+    width: 200px;
+}
+
+.sidebar {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 70px;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 0;
+}
+
+.sidebar-el-menu:not(.el-menu--collapse) {
+    width: 200px;
+}
+
+.sidebar>ul {
+    height: 100%;
+}
+</style>
 </style>

@@ -297,7 +297,7 @@ export default {
                         }
                         else {
                             this.$message.error('添加失败')
-                            this.editForm = Object.assign({}, this.editForm)
+                            this.editForm = {}
                         }
                     })
                 } else {
