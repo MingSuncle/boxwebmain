@@ -24,13 +24,13 @@
         </el-table>
         <div style="padding:10px 0">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :current-page="current_page" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
+                :current-page="current_page" :page-sizes="[5, 10, 15, 20]" :page-size="page_size"
                 layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </div>
 
         <el-dialog title="新增事件" :visible.sync="createVisible" width="40%">
-            <el-form :model="editForm" label-width="120px" >
+            <el-form :model="editForm" label-width="120px" ref="editForm" :rules="rules">
                 <el-form-item label="事件名称" prop="aieventName"><el-input placeholder="请输入事件名称"
                         v-model.number="editForm.aieventName"></el-input></el-form-item>
                 <el-form-item label="事件描述" prop="aieventDescription">
@@ -45,7 +45,7 @@
         </el-dialog>
 
         <el-dialog title="修改事件" :visible.sync="editVisible" width="40%">
-            <el-form :model="editForm" label-width="120px" >
+            <el-form :model="editForm" label-width="120px" ref="editForm" :rules="rules">
                 <el-form-item label="事件名称" prop="aieventName"><el-input placeholder="请输入事件名称"
                         v-model.number="editForm.aieventName"></el-input></el-form-item>
                 <el-form-item label="事件描述" prop="aieventDescription">
@@ -75,31 +75,16 @@ export default {
             page_size: 10,
             current_page: 1,
             tableData: [],
-            phone: "",
             form: {},
             aieventLimit: [],
-            editForm: {
-                aieventLimit: []
-            },
-            datatest: {},
+            editForm: {},
             value: '',
-            event: [],
+            rules: {
+                aieventName: [{ required: true, message: '请输入事件名称', trigger: 'blur' }],
+            },
             createVisible: false,
             editVisible: false,
-            states: [
-                {
-                    value: 0,
-                    label: "未激活"
-                },
-                {
-                    value: 1,
-                    label: "已激活"
-                },
-                {
-                    value: 2,
-                    label: "已锁定"
-                }
-            ],
+
 
         }
     },
@@ -122,8 +107,7 @@ export default {
 
         },
         handleEdit(row) {
-            this.editForm.aieventLimit = this.aieventLimit.join();
-            this.request.post("/box/editBox",this.editForm).then(res => {
+            this.request.post("/event/editEvent",this.editForm).then(res => {
                 if(res.code == 200){
                     this.$message({
                     message: '修改成功',
@@ -141,21 +125,18 @@ export default {
         },
         handleEditButton(index, row) {
             this.editForm = { ...row };
-            this.aieventLimit = this.editForm.aieventLimit.split(',')
-            console.log(this.aieventLimit)
-            console.log(this.editForm)
             this.editVisible = true;
         },
 
         handleDelete(index, row) {
-            this.$confirm('确认删除盒子？', '提示', {
+            this.$confirm('确认删除事件？请确认该事件已无关联盒子', '提示', {
                 type: 'warning',
                 confirmButtonText: '确定',
                 cancelButtonTest: '取消'
             }).then(() => (
-                this.request.get("/box/deleteBox", {
+                this.request.get("/event/deleteEvent", {
                     params: {
-                        box_id: row.boxId,
+                        event_id: row.aieventId,
                     }
                 }).then(res => {
                     if (res.code == 200) {
