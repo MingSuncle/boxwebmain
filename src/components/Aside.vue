@@ -17,6 +17,10 @@
         <i class="el-icon-s-platform"></i>
         <span slot="title">事件管理</span>
         </el-menu-item>
+        <el-menu-item index="/Order">
+        <i class="el-icon-s-order"></i>
+        <span slot="title">指令管理</span>
+        </el-menu-item>
         <!-- <el-menu-item index="/user">
         <i class="el-icon-user-solid"></i>
         <span slot="title">用户管理</span>

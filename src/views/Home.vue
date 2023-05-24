@@ -16,15 +16,21 @@
             </el-table-column>
             <el-table-column prop="expireTime" label="过期时间" align="center">
             </el-table-column>
+            <el-table-column prop="activateTime" label="激活时间" align="center">
+            </el-table-column>
+            <el-table-column prop="saleTime" label="销售时间" align="center">
+            </el-table-column>
+            <el-table-column prop="boxType" label="盒子类型" align="center">
+            </el-table-column>
             <el-table-column prop="boxState" label="盒子状态" align="center" width="150">
                 <template slot-scope="scope">
                     <el-tag :type="scope.row.boxState == '0'
-                            ? 'info'
-                            : scope.row.boxState == '1'
-                                ? 'success'
-                                : scope.row.boxState == '2'
-                                    ? 'danger'
-                                    : 'info'
+                        ? 'info'
+                        : scope.row.boxState == '1'
+                            ? 'success'
+                            : scope.row.boxState == '2'
+                                ? 'danger'
+                                : 'info'
                         " disable-transitions>{{
         scope.row.boxState == '0'
         ? '未激活'
@@ -80,7 +86,7 @@
         <el-dialog title="修改盒子配置" :visible.sync="editVisible" width="40%">
             <el-form :model="editForm" label-width="120px" ref="editFormRule" :rules="rules">
                 <el-form-item label="盒子ID" prop="boxId">
-                    <p>{{editForm.boxId}}</p>
+                    <p>{{ editForm.boxId }}</p>
                 </el-form-item>
                 <el-form-item label="允许最大通道数" prop="channelNumberLimit"><el-input placeholder="请输入允许最大通道数"
                         v-model.number="editForm.channelNumberLimit"></el-input></el-form-item>
@@ -100,21 +106,21 @@
                         <el-option v-for="item in states" :key="item.value" :label="item.label" :value="item.value">
                             <span>
                                 <el-tag :type="item.value == '0'
-                                                    ? 'info'
-                                                    : item.value == '1'
-                                                        ? 'success'
-                                                        : item.value == '2'
-                                                            ? 'danger'
-                                                            : 'info'
-                                                " disable-transitions>{{
-                    item.value == '0'
-                    ? '未激活'
-                    : item.value == '1'
-                        ? '已激活'
-                        : item.value == '2' ?
-                            '已锁定'
-                            : '无法识别'
-                }}</el-tag>
+                                    ? 'info'
+                                    : item.value == '1'
+                                        ? 'success'
+                                        : item.value == '2'
+                                            ? 'danger'
+                                            : 'info'
+                                    " disable-transitions>{{
+        item.value == '0'
+        ? '未激活'
+        : item.value == '1'
+            ? '已激活'
+            : item.value == '2' ?
+                '已锁定'
+                : '无法识别'
+    }}</el-tag>
                             </span>
                         </el-option>
                     </el-select>
@@ -208,18 +214,20 @@ export default {
 
         },
         handleEdit(row) {
-            this.editForm.aieventLimit = this.aieventLimit.join();
-            this.request.post("/box/editBox",this.editForm).then(res => {
-                if(res.code == 200){
+            if (this.aieventLimit != null) {
+                this.editForm.aieventLimit = this.aieventLimit.join(',')
+            }
+            this.request.post("/box/editBox", this.editForm).then(res => {
+                if (res.code == 200) {
                     this.$message({
-                    message: '修改成功',
-                    type : 'success'
+                        message: '修改成功',
+                        type: 'success'
                     })
                     this.load();
                 }
-                else{
-                this.$message.error('修改失败')
-            }
+                else {
+                    this.$message.error('修改失败')
+                }
             });
             this.editVisible = false;
             this.editForm = {};
@@ -279,7 +287,10 @@ export default {
             this.$refs.editFormRule.validate((valid) => {
                 if (valid) {
                     this.editForm.boxState = 0;
-                    this.editForm.aieventLimit = this.editForm.aieventLimit.join(',')
+                    if (this.editForm.aieventLimit != null) {
+                        this.editForm.aieventLimit = this.editForm.aieventLimit.join(',')
+                    }
+
 
                     this.request.post("/box/addBox", this.editForm).then(res => {
                         if (res.code == 200) {
@@ -289,6 +300,7 @@ export default {
                             });
                             this.load();
                             this.createVisible = false
+                            this.editForm = {}
                         }
                         else if (res.code == 300) {
                             this.$message.error('盒子ID已存在！');
@@ -309,17 +321,17 @@ export default {
         },
         load() {
             this.event = [],
-            this.request.get("/box/getEvent").then(res => {
-                this.datatest = res.data.result
-                const values = Object.values(this.datatest);
-                const keys = Object.keys(this.datatest);
-                const keysArr = Array.from(keys);
-                const valuesArr = Array.from(values);
-                const objArr = [];
-                for (let i = 0; i < keysArr.length; i++) {
-                    this.event.push({ key: keysArr[i], value: valuesArr[i] });
-                }
-            })
+                this.request.get("/box/getEvent").then(res => {
+                    this.datatest = res.data.result
+                    const values = Object.values(this.datatest);
+                    const keys = Object.keys(this.datatest);
+                    const keysArr = Array.from(keys);
+                    const valuesArr = Array.from(values);
+                    const objArr = [];
+                    for (let i = 0; i < keysArr.length; i++) {
+                        this.event.push({ key: keysArr[i], value: valuesArr[i] });
+                    }
+                })
             this.request.get("/box/getBox", {
                 params: {
                     current_page: this.current_page,

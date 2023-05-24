@@ -42,6 +42,22 @@ const routes = [
         },
         component: () => import('../views/event.vue')
       },
+      {
+        path:'/order',
+        name:'order',
+        meta:{
+            title:"指令管理"
+        },
+        component: () => import('../views/Order.vue')
+      },
+      {
+        path:'/project',
+        name:'project',
+        meta:{
+            title:"项目管理"
+        },
+        component: () => import('../views/Project.vue')
+      },
     ]
   },
   {
